@@ -30,8 +30,9 @@ def main():
             if proto == 1:
                 icmp_type, code, checksum, data =icmp_packet(data)
                 print(t1+ 'ICMP PACKET:')
-                print(t2+ 'TYPE:{}, CODE:{}')
-                print(t2+ 'ICMP PACKET:')
+                print(t2+ 'TYPE:{}, CODE:{}, checksum: {},'.format(icmp_type, code, checksum))
+                print(t2+ 'Data:')
+                print(format_multi_line(dt3,data))
 
 
 # unpacking the ethernet frame:
