@@ -27,12 +27,29 @@ def main():
             print(t1+ 'IPv4 packet:')
             print(t2+'version:{}, Header length: {}, ttl: {}'.format(version, header_length, ttl))
             print(t2+'protocol:{}, source: {}, target: {}'.format(proto, src, target))
+
             if proto == 1:
                 icmp_type, code, checksum, data =icmp_packet(data)
                 print(t1+ 'ICMP PACKET:')
                 print(t2+ 'TYPE:{}, CODE:{}, checksum: {},'.format(icmp_type, code, checksum))
                 print(t2+ 'Data:')
                 print(format_multi_line(dt3,data))
+            #TCP
+
+            elif proto ==6 :
+                (src_port, dest_port, sequence, acknowledgement, flag_urg, flage_ack, flag_psh, flag_syn, flag_fin)= tcp_segment(data)
+                print(t1+"Tcp segment:")
+                print(t2+"source port : {}, Destination part: {}".format(src_port, dest_port))
+                print(t2 +'Flags:')
+                print(t3+ 'URG: { }, ACK:{}, PSH: {}, RST: {}, SYN: {}, FIN: {}'.format(flag_urg, flag_ack, flag_psh,flag_rst, flag_syn, flag_fin))
+
+            #udp
+            elif proto == 17:
+                src_port, dest_port, length ,data = udp_segment(data)
+                print(t1 +'udp segment:')
+                print(t2 + 'Source port: {}, Desination port: {}, Length: {}'. format(src_port, dest_port,length))
+
+            
 
 
 # unpacking the ethernet frame:
@@ -73,7 +90,7 @@ def tcp_segment(data):
     #here we grabbbed the first 14 bytes of the data
     offset = (offset_reserved_flags>>12)*4
     flag_urg =(offset_reserved_flags & 32)>>5
-    flag_ack =(offset_reserved_flags & 16)>>4
+    flag_ack =(offset_reserved_flags & 16)>>4  
     flag_psh =(offset_reserved_flags & 8)>>3
     flag_rst =(offset_reserved_flags & 4)>>2
     flag_syn =(offset_reserved_flags & 2)>>1  
@@ -83,8 +100,8 @@ def tcp_segment(data):
 
 #unnpacking the UDP segment 
 def udp_segment(data):
-    src_port , dest_port, size =struct.unpack('! H H 2x H', data[:8])
-    return src_port, dest_port, size, data[:8]
+    src_port , dest_port,length = struct.unpack('! H H H 2x', data[:8])
+    return src_port, dest_port, length, data[8:]
 
 #formating the muli line data
 def format_multi_line(prefix, string, size=80):
@@ -95,3 +112,4 @@ def format_multi_line(prefix, string, size=80):
             size-= 1
         return '\n'.join([prefix + line for line in textwrap.wrap(string, size)])
 main()
+    
