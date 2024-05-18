@@ -47,7 +47,7 @@ def main():
             elif proto == 17:
                 src_port, dest_port, length ,data = udp_segment(data)
                 print(t1 +'udp segment:')
-                print(t2 + 'Source port: {}, Desination port: {}, Length: {}'. format(src_port, dest_port,length))
+                print(t2 + 'Source port: {}, Desination port: {}, Length: {}'. format(src_port, dest_port,leng))
 
             
 
